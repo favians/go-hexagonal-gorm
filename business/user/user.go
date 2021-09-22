@@ -4,7 +4,7 @@ import "time"
 
 //User product User that available to rent or sell
 type User struct {
-	ID         string
+	ID         int
 	Name       string
 	Username   string
 	Password   string
@@ -17,7 +17,7 @@ type User struct {
 
 //NewUser create new User
 func NewUser(
-	id string,
+	id int,
 	name string,
 	username string,
 	password string,

@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 	"go-hexagonal/config"
-	"go-hexagonal/modules/mongodb"
 
 	"go-hexagonal/api"
 	userController "go-hexagonal/api/v1/user"
 	userService "go-hexagonal/business/user"
+	migration "go-hexagonal/modules/migration"
 	userRepository "go-hexagonal/modules/user"
 
 	"os"
@@ -17,38 +17,33 @@ import (
 
 	echo "github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
-	"go.mongodb.org/mongo-driver/mongo"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-func newDatabaseConnection(config *config.AppConfig) *mongo.Database {
-	uri := "mongodb://"
+func newDatabaseConnection(config *config.AppConfig) *gorm.DB {
 
-	if config.AppEnvironment == "prod" {
-		uri = "mongodb+srv://"
+	configDB := map[string]string{
+		"DB_Username": os.Getenv("GOHEXAGONAL_DB_USERNAME"),
+		"DB_Password": os.Getenv("GOHEXAGONAL_DB_PASSWORD"),
+		"DB_Port":     os.Getenv("GOHEXAGONAL_DB_PORT"),
+		"DB_Host":     os.Getenv("GOHEXAGONAL_DB_ADDRESS"),
+		"DB_Name":     os.Getenv("GOHEXAGONAL_DB_NAME"),
 	}
 
-	if config.DbUsername != "" {
-		uri = fmt.Sprintf("%s%v:%v@", uri, config.DbUsername, config.DbPassword)
+	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		configDB["DB_Username"],
+		configDB["DB_Password"],
+		configDB["DB_Host"],
+		configDB["DB_Port"],
+		configDB["DB_Name"])
+
+	db, e := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
+	if e != nil {
+		panic(e)
 	}
 
-	if config.AppEnvironment == "prod" {
-		uri = fmt.Sprintf("%s%v/factura?retryWrites=true&w=majority",
-			uri,
-			config.DbAddress,
-		)
-	} else {
-		uri = fmt.Sprintf("%s%v:%v/?connect=direct",
-			uri,
-			config.DbAddress,
-			config.DbPort,
-		)
-	}
-
-	db, err := mongodb.NewDatabaseConnection(uri, config.DbName)
-
-	if err != nil {
-		panic(err)
-	}
+	migration.InitMigrate(db)
 
 	return db
 }
@@ -61,7 +56,7 @@ func main() {
 	dbConnection := newDatabaseConnection(config)
 
 	//initiate item repository
-	userRepo := userRepository.NewMongoDBRepository(dbConnection)
+	userRepo := userRepository.NewGormDBRepository(dbConnection)
 
 	//initiate item service
 	userService := userService.NewService(userRepo)

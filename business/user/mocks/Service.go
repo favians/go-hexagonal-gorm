@@ -13,13 +13,13 @@ type Service struct {
 	mock.Mock
 }
 
-// FindAllUserWithPagination provides a mock function with given fields: skip, rowPerPage
-func (_m *Service) FindAllUserWithPagination(skip int, rowPerPage int) ([]user.User, error) {
-	ret := _m.Called(skip, rowPerPage)
+// FindAllUser provides a mock function with given fields:
+func (_m *Service) FindAllUser() ([]user.User, error) {
+	ret := _m.Called()
 
 	var r0 []user.User
-	if rf, ok := ret.Get(0).(func(int, int) []user.User); ok {
-		r0 = rf(skip, rowPerPage)
+	if rf, ok := ret.Get(0).(func() []user.User); ok {
+		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]user.User)
@@ -27,8 +27,8 @@ func (_m *Service) FindAllUserWithPagination(skip int, rowPerPage int) ([]user.U
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int, int) error); ok {
-		r1 = rf(skip, rowPerPage)
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -37,11 +37,11 @@ func (_m *Service) FindAllUserWithPagination(skip int, rowPerPage int) ([]user.U
 }
 
 // FindUserByID provides a mock function with given fields: id
-func (_m *Service) FindUserByID(id string) (*user.User, error) {
+func (_m *Service) FindUserByID(id int) (*user.User, error) {
 	ret := _m.Called(id)
 
 	var r0 *user.User
-	if rf, ok := ret.Get(0).(func(string) *user.User); ok {
+	if rf, ok := ret.Get(0).(func(int) *user.User); ok {
 		r0 = rf(id)
 	} else {
 		if ret.Get(0) != nil {
@@ -50,7 +50,7 @@ func (_m *Service) FindUserByID(id string) (*user.User, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string) error); ok {
+	if rf, ok := ret.Get(1).(func(int) error); ok {
 		r1 = rf(id)
 	} else {
 		r1 = ret.Error(1)
@@ -74,11 +74,11 @@ func (_m *Service) InsertUser(insertUserSpec user.InsertUserSpec, createdBy stri
 }
 
 // UpdateUser provides a mock function with given fields: id, name, modifiedBy, currentVersion
-func (_m *Service) UpdateUser(id string, name string, modifiedBy string, currentVersion int) error {
+func (_m *Service) UpdateUser(id int, name string, modifiedBy string, currentVersion int) error {
 	ret := _m.Called(id, name, modifiedBy, currentVersion)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string, string, string, int) error); ok {
+	if rf, ok := ret.Get(0).(func(int, string, string, int) error); ok {
 		r0 = rf(id, name, modifiedBy, currentVersion)
 	} else {
 		r0 = ret.Error(0)

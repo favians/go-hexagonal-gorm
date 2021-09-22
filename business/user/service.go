@@ -2,7 +2,6 @@ package user
 
 import (
 	"go-hexagonal/business"
-	"go-hexagonal/util/primiviteIDGenerator"
 	"go-hexagonal/util/validator"
 	"time"
 )
@@ -27,14 +26,14 @@ func NewService(repository Repository) Service {
 }
 
 //FindUserByID Get user by given ID, return nil if not exist
-func (s *service) FindUserByID(id string) (*User, error) {
+func (s *service) FindUserByID(id int) (*User, error) {
 	return s.repository.FindUserByID(id)
 }
 
-//FindAllUserWithPagination Get all users , will be return empty array if no data or error occured
-func (s *service) FindAllUserWithPagination(skip int, rowPerPage int) ([]User, error) {
+//FindAllUser Get all users , will be return empty array if no data or error occured
+func (s *service) FindAllUser() ([]User, error) {
 
-	user, err := s.repository.FindAllUserWithPagination(skip, rowPerPage)
+	user, err := s.repository.FindAllUser()
 	if err != nil {
 		return []User{}, err
 	}
@@ -49,9 +48,8 @@ func (s *service) InsertUser(insertUserSpec InsertUserSpec, createdBy string) er
 		return business.ErrInvalidSpec
 	}
 
-	id := primiviteIDGenerator.GenerateID()
 	user := NewUser(
-		id,
+		1,
 		insertUserSpec.Name,
 		insertUserSpec.Username,
 		insertUserSpec.Password,
@@ -68,7 +66,7 @@ func (s *service) InsertUser(insertUserSpec InsertUserSpec, createdBy string) er
 }
 
 //UpdateUser will update found user, if not exists will be return error
-func (s *service) UpdateUser(id string, name string, modifiedBy string, currentVersion int) error {
+func (s *service) UpdateUser(id int, name string, modifiedBy string, currentVersion int) error {
 
 	user, err := s.repository.FindUserByID(id)
 	if err != nil {

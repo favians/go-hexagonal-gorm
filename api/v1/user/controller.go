@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"go-hexagonal/api/common"
 	"go-hexagonal/api/v1/user/request"
 	"go-hexagonal/api/v1/user/response"
@@ -24,7 +25,7 @@ func NewController(service user.Service) *Controller {
 
 //GetItemByID Get item by ID echo handler
 func (controller *Controller) FindUserByID(c echo.Context) error {
-	id := c.Param("id")
+	id, _ := strconv.Atoi(c.Param("id"))
 
 	user, err := controller.service.FindUserByID(id)
 	if err != nil {
@@ -36,8 +37,8 @@ func (controller *Controller) FindUserByID(c echo.Context) error {
 	return c.JSON(common.NewSuccessResponse(response))
 }
 
-//FindAllUserWithPagination Find All User with pagination handler
-func (controller *Controller) FindAllUserWithPagination(c echo.Context) error {
+//FindAllUser Find All User with pagination handler
+func (controller *Controller) FindAllUser(c echo.Context) error {
 
 	pageQueryParam := c.QueryParam("page")
 	page, err := strconv.Atoi(pageQueryParam)
@@ -52,8 +53,9 @@ func (controller *Controller) FindAllUserWithPagination(c echo.Context) error {
 	}
 
 	skip := (page * rowPerPage) - rowPerPage
+	fmt.Println(skip)
 
-	users, err := controller.service.FindAllUserWithPagination(skip, rowPerPage)
+	users, err := controller.service.FindAllUser()
 	if err != nil {
 		return c.JSON(common.NewErrorBusinessResponse(err))
 	}
@@ -81,7 +83,7 @@ func (controller *Controller) InsertUser(c echo.Context) error {
 
 // UpdateUser update existing user
 func (controller *Controller) UpdateUser(c echo.Context) error {
-	id := c.Param("id")
+	id, _ := strconv.Atoi(c.Param("id"))
 
 	updateUserRequest := new(request.UpdateUserRequest)
 

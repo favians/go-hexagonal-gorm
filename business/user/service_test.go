@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	id       = "id"
+	id       = 1
 	name     = "name"
 	username = "username"
 	password = "password"

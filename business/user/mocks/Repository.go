@@ -13,13 +13,13 @@ type Repository struct {
 	mock.Mock
 }
 
-// FindAllUserWithPagination provides a mock function with given fields: skip, rowPerPage
-func (_m *Repository) FindAllUserWithPagination(skip int, rowPerPage int) ([]user.User, error) {
-	ret := _m.Called(skip, rowPerPage)
+// FindAllUser provides a mock function with given fields:
+func (_m *Repository) FindAllUser() ([]user.User, error) {
+	ret := _m.Called()
 
 	var r0 []user.User
-	if rf, ok := ret.Get(0).(func(int, int) []user.User); ok {
-		r0 = rf(skip, rowPerPage)
+	if rf, ok := ret.Get(0).(func() []user.User); ok {
+		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]user.User)
@@ -27,8 +27,8 @@ func (_m *Repository) FindAllUserWithPagination(skip int, rowPerPage int) ([]use
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int, int) error); ok {
-		r1 = rf(skip, rowPerPage)
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -37,11 +37,11 @@ func (_m *Repository) FindAllUserWithPagination(skip int, rowPerPage int) ([]use
 }
 
 // FindUserByID provides a mock function with given fields: id
-func (_m *Repository) FindUserByID(id string) (*user.User, error) {
+func (_m *Repository) FindUserByID(id int) (*user.User, error) {
 	ret := _m.Called(id)
 
 	var r0 *user.User
-	if rf, ok := ret.Get(0).(func(string) *user.User); ok {
+	if rf, ok := ret.Get(0).(func(int) *user.User); ok {
 		r0 = rf(id)
 	} else {
 		if ret.Get(0) != nil {
@@ -50,7 +50,7 @@ func (_m *Repository) FindUserByID(id string) (*user.User, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string) error); ok {
+	if rf, ok := ret.Get(1).(func(int) error); ok {
 		r1 = rf(id)
 	} else {
 		r1 = ret.Error(1)

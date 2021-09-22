@@ -15,7 +15,7 @@ func RegisterPath(e *echo.Echo, userController *user.Controller) {
 	//user
 	userV1 := e.Group("v1/users")
 	userV1.GET("/:id", userController.FindUserByID)
-	userV1.GET("", userController.FindAllUserWithPagination)
+	userV1.GET("", userController.FindAllUser)
 	userV1.POST("", userController.InsertUser)
 	userV1.PUT("/:id", userController.UpdateUser)
 
