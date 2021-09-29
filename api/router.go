@@ -1,13 +1,14 @@
 package api
 
 import (
+	"go-hexagonal/api/v1/pet"
 	"go-hexagonal/api/v1/user"
 
 	echo "github.com/labstack/echo/v4"
 )
 
 //RegisterPath Register all V1 API with routing path
-func RegisterPath(e *echo.Echo, userController *user.Controller) {
+func RegisterPath(e *echo.Echo, userController *user.Controller, petController *pet.Controller) {
 	if userController == nil {
 		panic("user controller cannot be nil")
 	}
@@ -18,6 +19,13 @@ func RegisterPath(e *echo.Echo, userController *user.Controller) {
 	userV1.GET("", userController.FindAllUser)
 	userV1.POST("", userController.InsertUser)
 	userV1.PUT("/:id", userController.UpdateUser)
+
+	//pet
+	petV1 := e.Group("v1/pets")
+	petV1.GET("/:id", petController.FindPetByID)
+	petV1.GET("", petController.FindAllPet)
+	petV1.POST("", petController.InsertPet)
+	petV1.PUT("/:id", petController.UpdatePet)
 
 	//health check
 	e.GET("/health", func(c echo.Context) error {

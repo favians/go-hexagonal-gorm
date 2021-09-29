@@ -11,6 +11,10 @@ import (
 	migration "go-hexagonal/modules/migration"
 	userRepository "go-hexagonal/modules/user"
 
+	petController "go-hexagonal/api/v1/pet"
+	petService "go-hexagonal/business/pet"
+	petRepository "go-hexagonal/modules/pet"
+
 	"os"
 	"os/signal"
 	"time"
@@ -55,20 +59,29 @@ func main() {
 	//initialize database connection based on given config
 	dbConnection := newDatabaseConnection(config)
 
-	//initiate item repository
+	//initiate user repository
 	userRepo := userRepository.NewGormDBRepository(dbConnection)
 
-	//initiate item service
+	//initiate user service
 	userService := userService.NewService(userRepo)
 
-	//initiate item controller
+	//initiate user controller
 	userController := userController.NewController(userService)
+
+	//initiate pet repository
+	petRepo := petRepository.NewGormDBRepository(dbConnection)
+
+	//initiate pet service
+	petService := petService.NewService(petRepo)
+
+	//initiate pet controller
+	petController := petController.NewController(petService)
 
 	//create echo http
 	e := echo.New()
 
 	//register API path and handler
-	api.RegisterPath(e, userController)
+	api.RegisterPath(e, userController, petController)
 
 	// run server
 	go func() {
