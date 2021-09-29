@@ -6,7 +6,7 @@ The code implementation was inspired by port and adapter pattern or known as [he
 
 -   **Business**<br/>Contains all the logic in domain business. Also called this as a service. All the interface of repository needed and the implementation of the service itself will be put here.
 -   **Modules**<br/>Contains implementation of interfaces that defined at the business (also called as server-side adapters in hexagonal's term)
--   **API**<br/>API http handler or controller (also called user-side adapters in hexagonal's term)
+-   **Controller**<br/>Controller http handler or api (also called user-side adapters in hexagonal's term)
 
 ![golang clean architecture](https://github.com/favians/go-hexagonal-gorm/raw/master/Hexagonal.png)
 
