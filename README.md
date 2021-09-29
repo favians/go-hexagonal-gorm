@@ -8,6 +8,8 @@ The code implementation was inspired by port and adapter pattern or known as [he
 -   **Modules**<br/>Contains implementation of interfaces that defined at the business (also called as server-side adapters in hexagonal's term)
 -   **API**<br/>API http handler or controller (also called user-side adapters in hexagonal's term)
 
+![golang clean architecture](https://github.com/favians/go-hexagonal-gorm/raw/master/Hexagonal.png)
+
 # Data initialization
 
 To describe about how port and adapter interaction (separation concerned), this example will have two databases supported. There are MySQL using gorm as library.
