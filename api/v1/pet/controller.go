@@ -1,7 +1,6 @@
 package pet
 
 import (
-	"fmt"
 	"go-hexagonal/api/common"
 	"go-hexagonal/api/v1/pet/request"
 	"go-hexagonal/api/v1/pet/response"
@@ -81,9 +80,8 @@ func (controller *Controller) FindAllPet(c echo.Context) error {
 	}
 
 	skip := (page * rowPerPage) - rowPerPage
-	fmt.Println(skip)
 
-	pets, err := controller.service.FindAllPet(int(userID))
+	pets, err := controller.service.FindAllPet(int(userID), skip, rowPerPage)
 	if err != nil {
 		return c.JSON(common.NewErrorBusinessResponse(err))
 	}

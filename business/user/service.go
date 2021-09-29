@@ -36,9 +36,9 @@ func (s *service) FindUserByUsernameAndPassword(username string, password string
 }
 
 //FindAllUser Get all users , will be return empty array if no data or error occured
-func (s *service) FindAllUser() ([]User, error) {
+func (s *service) FindAllUser(skip int, rowPerPage int) ([]User, error) {
 
-	user, err := s.repository.FindAllUser()
+	user, err := s.repository.FindAllUser(skip, rowPerPage)
 	if err != nil {
 		return []User{}, err
 	}

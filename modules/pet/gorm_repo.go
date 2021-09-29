@@ -82,11 +82,11 @@ func (repo *GormRepository) FindPetByID(id int, userID int) (*pet.Pet, error) {
 }
 
 //FindAllPet find all pet with given specific page and row per page, will return empty slice instead of nil
-func (repo *GormRepository) FindAllPet(userID int) ([]pet.Pet, error) {
+func (repo *GormRepository) FindAllPet(userID int, skip int, rowPerPage int) ([]pet.Pet, error) {
 
 	var pets []PetTable
 
-	err := repo.DB.Where("user_id = ?", userID).Find(&pets).Error
+	err := repo.DB.Where("user_id = ?", userID).Offset(skip).Limit(rowPerPage).Find(&pets).Error
 	if err != nil {
 		return nil, err
 	}

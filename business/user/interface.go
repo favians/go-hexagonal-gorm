@@ -9,7 +9,7 @@ type Service interface {
 	FindUserByUsernameAndPassword(username string, password string) (*User, error)
 
 	//FindAllUser find all user with given specific page and row per page, will return empty slice instead of nil
-	FindAllUser() ([]User, error)
+	FindAllUser(skip int, rowPerPage int) ([]User, error)
 
 	//InsertUser Insert new User into storage
 	InsertUser(insertUserSpec InsertUserSpec, createdBy string) error
@@ -27,7 +27,7 @@ type Repository interface {
 	FindUserByUsernameAndPassword(username string, password string) (*User, error)
 
 	//FindAllUser find all user with given specific page and row per page, will return empty slice instead of nil
-	FindAllUser() ([]User, error)
+	FindAllUser(skip int, rowPerPage int) ([]User, error)
 
 	//InsertUser Insert new User into storage
 	InsertUser(user User) error

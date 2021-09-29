@@ -6,7 +6,7 @@ type Service interface {
 	FindPetByID(id int, userID int) (*Pet, error)
 
 	//FindAllPet find all pet with given specific page and row per page, will return empty slice instead of nil
-	FindAllPet(userID int) ([]Pet, error)
+	FindAllPet(userID int, skip int, rowPerPage int) ([]Pet, error)
 
 	//InsertPet Insert new Pet into storage
 	InsertPet(insertPetSpec InsertPetSpec, createdBy string) error
@@ -21,7 +21,7 @@ type Repository interface {
 	FindPetByID(id int, userID int) (*Pet, error)
 
 	//FindAllPet find all pet with given specific page and row per page, will return empty slice instead of nil
-	FindAllPet(userID int) ([]Pet, error)
+	FindAllPet(userID int, skip int, rowPerPage int) ([]Pet, error)
 
 	//InsertPet Insert new Pet into storage
 	InsertPet(pet Pet) error

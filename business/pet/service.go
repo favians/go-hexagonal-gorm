@@ -31,9 +31,9 @@ func (s *service) FindPetByID(id int, userID int) (*Pet, error) {
 }
 
 //FindAllPet Get all pets , will be return empty array if no data or error occured
-func (s *service) FindAllPet(userID int) ([]Pet, error) {
+func (s *service) FindAllPet(userID int, skip int, rowPerPage int) ([]Pet, error) {
 
-	pet, err := s.repository.FindAllPet(userID)
+	pet, err := s.repository.FindAllPet(userID, skip, rowPerPage)
 	if err != nil {
 		return []Pet{}, err
 	}

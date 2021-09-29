@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"go-hexagonal/api/common"
 	"go-hexagonal/api/v1/user/request"
 	"go-hexagonal/api/v1/user/response"
@@ -53,9 +52,8 @@ func (controller *Controller) FindAllUser(c echo.Context) error {
 	}
 
 	skip := (page * rowPerPage) - rowPerPage
-	fmt.Println(skip)
 
-	users, err := controller.service.FindAllUser()
+	users, err := controller.service.FindAllUser(skip, rowPerPage)
 	if err != nil {
 		return c.JSON(common.NewErrorBusinessResponse(err))
 	}

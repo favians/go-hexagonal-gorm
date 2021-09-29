@@ -13,13 +13,13 @@ type Repository struct {
 	mock.Mock
 }
 
-// FindAllUser provides a mock function with given fields:
-func (_m *Repository) FindAllUser() ([]user.User, error) {
-	ret := _m.Called()
+// FindAllUser provides a mock function with given fields: skip, rowPerPage
+func (_m *Repository) FindAllUser(skip int, rowPerPage int) ([]user.User, error) {
+	ret := _m.Called(skip, rowPerPage)
 
 	var r0 []user.User
-	if rf, ok := ret.Get(0).(func() []user.User); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(int, int) []user.User); ok {
+		r0 = rf(skip, rowPerPage)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]user.User)
@@ -27,8 +27,8 @@ func (_m *Repository) FindAllUser() ([]user.User, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
+	if rf, ok := ret.Get(1).(func(int, int) error); ok {
+		r1 = rf(skip, rowPerPage)
 	} else {
 		r1 = ret.Error(1)
 	}

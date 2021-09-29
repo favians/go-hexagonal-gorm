@@ -94,11 +94,12 @@ func (repo *GormRepository) FindUserByUsernameAndPassword(username string, passw
 }
 
 //FindAllUser find all user with given specific page and row per page, will return empty slice instead of nil
-func (repo *GormRepository) FindAllUser() ([]user.User, error) {
+func (repo *GormRepository) FindAllUser(skip int, rowPerPage int) ([]user.User, error) {
+	rowPerPage = rowPerPage + 1
 
 	var users []UserTable
 
-	err := repo.DB.Find(&users).Error
+	err := repo.DB.Offset(skip).Limit(rowPerPage).Find(&users).Error
 	if err != nil {
 		return nil, err
 	}
