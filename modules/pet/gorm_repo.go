@@ -67,11 +67,11 @@ func NewGormDBRepository(db *gorm.DB) *GormRepository {
 }
 
 //FindPetByID If data not found will return nil without error
-func (repo *GormRepository) FindPetByID(id int) (*pet.Pet, error) {
+func (repo *GormRepository) FindPetByID(id int, userID int) (*pet.Pet, error) {
 
 	var petData PetTable
 
-	err := repo.DB.First(&petData, id).Error
+	err := repo.DB.Where("id = ?", id).Where("user_id = ?", userID).First(&petData).Error
 	if err != nil {
 		return nil, err
 	}
@@ -82,11 +82,11 @@ func (repo *GormRepository) FindPetByID(id int) (*pet.Pet, error) {
 }
 
 //FindAllPet find all pet with given specific page and row per page, will return empty slice instead of nil
-func (repo *GormRepository) FindAllPet() ([]pet.Pet, error) {
+func (repo *GormRepository) FindAllPet(userID int) ([]pet.Pet, error) {
 
 	var pets []PetTable
 
-	err := repo.DB.Find(&pets).Error
+	err := repo.DB.Where("user_id = ?", userID).Find(&pets).Error
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +118,7 @@ func (repo *GormRepository) UpdatePet(pet pet.Pet, currentVersion int) error {
 
 	petData := newPetTable(pet)
 
-	err := repo.DB.Model(&petData).Updates(PetTable{Name: petData.Name, Version: petData.Version}).Error
+	err := repo.DB.Model(&petData).Where("user_id = ?", pet.UserID).Updates(PetTable{Name: petData.Name, Version: petData.Version}).Error
 	if err != nil {
 		return err
 	}
