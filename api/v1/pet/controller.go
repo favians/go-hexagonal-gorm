@@ -8,6 +8,7 @@ import (
 	"go-hexagonal/business/pet"
 	"strconv"
 
+	"github.com/golang-jwt/jwt"
 	echo "github.com/labstack/echo/v4"
 )
 
@@ -67,13 +68,26 @@ func (controller *Controller) FindAllPet(c echo.Context) error {
 
 // InsertPet Create new pet echo handler
 func (controller *Controller) InsertPet(c echo.Context) error {
-	insertPetRequest := new(request.InsertPetRequest)
 
+	user := c.Get("user").(*jwt.Token)
+	if !user.Valid {
+		return c.JSON(common.NewForbiddenResponse())
+	}
+
+	claims := user.Claims.(jwt.MapClaims)
+	//use float64 because its default data that provide by JWT, we cant use int/int32/int64/etc.
+	//MUST CONVERT TO FLOAT64
+	userID, ok := claims["id"].(float64)
+	if !ok {
+		return c.JSON(common.NewForbiddenResponse())
+	}
+
+	insertPetRequest := new(request.InsertPetRequest)
 	if err := c.Bind(insertPetRequest); err != nil {
 		return c.JSON(common.NewBadRequestResponse())
 	}
 
-	err := controller.service.InsertPet(*insertPetRequest.ToUpsertPetSpec(), "creator")
+	err := controller.service.InsertPet(*insertPetRequest.ToUpsertPetSpec(int(userID)), "creator")
 	if err != nil {
 		return c.JSON(common.NewErrorBusinessResponse(err))
 	}

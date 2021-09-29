@@ -1,6 +1,8 @@
 package api
 
 import (
+	"go-hexagonal/api/middleware"
+	"go-hexagonal/api/v1/auth"
 	"go-hexagonal/api/v1/pet"
 	"go-hexagonal/api/v1/user"
 
@@ -8,10 +10,13 @@ import (
 )
 
 //RegisterPath Register all V1 API with routing path
-func RegisterPath(e *echo.Echo, userController *user.Controller, petController *pet.Controller) {
+func RegisterPath(e *echo.Echo, authController *auth.Controller, userController *user.Controller, petController *pet.Controller) {
 	if userController == nil {
 		panic("user controller cannot be nil")
 	}
+
+	authV1 := e.Group("v1/auth")
+	authV1.POST("/login", authController.Login)
 
 	//user
 	userV1 := e.Group("v1/users")
@@ -22,6 +27,7 @@ func RegisterPath(e *echo.Echo, userController *user.Controller, petController *
 
 	//pet
 	petV1 := e.Group("v1/pets")
+	petV1.Use(middleware.JWTMiddleware())
 	petV1.GET("/:id", petController.FindPetByID)
 	petV1.GET("", petController.FindAllPet)
 	petV1.POST("", petController.InsertPet)

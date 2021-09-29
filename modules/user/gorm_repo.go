@@ -78,6 +78,21 @@ func (repo *GormRepository) FindUserByID(id int) (*user.User, error) {
 	return &user, nil
 }
 
+//FindUserByID If data not found will return nil without error
+func (repo *GormRepository) FindUserByUsernameAndPassword(username string, password string) (*user.User, error) {
+
+	var userData UserTable
+
+	err := repo.DB.Where("username = ?", username).Where("password = ?", password).First(&userData).Error
+	if err != nil {
+		return nil, err
+	}
+
+	user := userData.ToUser()
+
+	return &user, nil
+}
+
 //FindAllUser find all user with given specific page and row per page, will return empty slice instead of nil
 func (repo *GormRepository) FindAllUser() ([]user.User, error) {
 

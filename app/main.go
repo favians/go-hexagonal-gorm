@@ -15,6 +15,9 @@ import (
 	petService "go-hexagonal/business/pet"
 	petRepository "go-hexagonal/modules/pet"
 
+	authController "go-hexagonal/api/v1/auth"
+	authService "go-hexagonal/business/auth"
+
 	"os"
 	"os/signal"
 	"time"
@@ -77,11 +80,17 @@ func main() {
 	//initiate pet controller
 	petController := petController.NewController(petService)
 
+	//initiate auth service
+	authService := authService.NewService(userService)
+
+	//initiate auth controller
+	authController := authController.NewController(authService)
+
 	//create echo http
 	e := echo.New()
 
 	//register API path and handler
-	api.RegisterPath(e, userController, petController)
+	api.RegisterPath(e, authController, userController, petController)
 
 	// run server
 	go func() {

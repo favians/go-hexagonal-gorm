@@ -5,6 +5,9 @@ type Service interface {
 	//FindUserByID If data not found will return nil without error
 	FindUserByID(id int) (*User, error)
 
+	//FindUserByUsernameAndPassword If data not found will return nil
+	FindUserByUsernameAndPassword(username string, password string) (*User, error)
+
 	//FindAllUser find all user with given specific page and row per page, will return empty slice instead of nil
 	FindAllUser() ([]User, error)
 
@@ -19,6 +22,9 @@ type Service interface {
 type Repository interface {
 	//FindUserByID If data not found will return nil without error
 	FindUserByID(id int) (*User, error)
+
+	//FindUserByUsernameAndPassword If data not found will return nil
+	FindUserByUsernameAndPassword(username string, password string) (*User, error)
 
 	//FindAllUser find all user with given specific page and row per page, will return empty slice instead of nil
 	FindAllUser() ([]User, error)

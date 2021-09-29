@@ -30,6 +30,11 @@ func (s *service) FindUserByID(id int) (*User, error) {
 	return s.repository.FindUserByID(id)
 }
 
+//FindUserByUsernameAndPassword Get user by given ID, return nil if not exist
+func (s *service) FindUserByUsernameAndPassword(username string, password string) (*User, error) {
+	return s.repository.FindUserByUsernameAndPassword(username, password)
+}
+
 //FindAllUser Get all users , will be return empty array if no data or error occured
 func (s *service) FindAllUser() ([]User, error) {
 
