@@ -20,15 +20,19 @@ func NewGetAllPetResponse(pets []pet.Pet, page int, rowPerPage int) getAllPetRes
 	getAllPetResponse := getAllPetResponse{}
 	getAllPetResponse.Meta.BuildMeta(lenPets, page, rowPerPage)
 
-	for i := 0; i < getAllPetResponse.Meta.RowPerPage; i++ {
+	for index, value := range pets {
+		if index == getAllPetResponse.Meta.RowPerPage {
+			continue
+		}
+
 		var getPetResponse GetPetResponse
 
-		getPetResponse.ID = pets[i].ID
-		getPetResponse.UserID = pets[i].UserID
-		getPetResponse.Name = pets[i].Name
-		getPetResponse.Kind = pets[i].Kind
-		getPetResponse.ModifiedAt = pets[i].ModifiedAt
-		getPetResponse.Version = pets[i].Version
+		getPetResponse.ID = value.ID
+		getPetResponse.UserID = value.UserID
+		getPetResponse.Name = value.Name
+		getPetResponse.Kind = value.Kind
+		getPetResponse.ModifiedAt = value.ModifiedAt
+		getPetResponse.Version = value.Version
 
 		getAllPetResponse.Pets = append(getAllPetResponse.Pets, getPetResponse)
 	}

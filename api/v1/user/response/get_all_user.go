@@ -20,14 +20,18 @@ func NewGetAllUserResponse(users []user.User, page int, rowPerPage int) getAllUs
 	getAllUserResponse := getAllUserResponse{}
 	getAllUserResponse.Meta.BuildMeta(lenUsers, page, rowPerPage)
 
-	for i := 0; i < getAllUserResponse.Meta.RowPerPage; i++ {
+	for index, value := range users {
+		if index == getAllUserResponse.Meta.RowPerPage {
+			continue
+		}
+
 		var getUserResponse GetUserResponse
 
-		getUserResponse.ID = users[i].ID
-		getUserResponse.Name = users[i].Name
-		getUserResponse.Username = users[i].Username
-		getUserResponse.ModifiedAt = users[i].ModifiedAt
-		getUserResponse.Version = users[i].Version
+		getUserResponse.ID = value.ID
+		getUserResponse.Name = value.Name
+		getUserResponse.Username = value.Username
+		getUserResponse.ModifiedAt = value.ModifiedAt
+		getUserResponse.Version = value.Version
 
 		getAllUserResponse.Users = append(getAllUserResponse.Users, getUserResponse)
 	}
