@@ -11,7 +11,7 @@ type GetPetResponse struct {
 	UserID     int       `json:"pet_id"`
 	Name       string    `json:"name"`
 	Kind       string    `json:"kind"`
-	ModifiedAt time.Time `json:"modifiedAt"`
+	ModifiedAt time.Time `json:"modified_at"`
 	Version    int       `json:"version"`
 }
 

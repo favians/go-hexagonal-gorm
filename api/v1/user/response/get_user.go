@@ -10,7 +10,7 @@ type GetUserResponse struct {
 	ID         int       `json:"id"`
 	Name       string    `json:"name"`
 	Username   string    `json:"username"`
-	ModifiedAt time.Time `json:"modifiedAt"`
+	ModifiedAt time.Time `json:"modified_at"`
 	Version    int       `json:"version"`
 }
 

@@ -1,17 +1,13 @@
 package response
 
-import "go-hexagonal/business/pet"
+import (
+	"go-hexagonal/api/paginator"
+	"go-hexagonal/business/pet"
+)
 
 type getAllPetResponse struct {
-	Meta meta             `json:"meta"`
+	Meta paginator.Meta   `json:"meta"`
 	Pets []GetPetResponse `json:"pets"`
-}
-
-type meta struct {
-	Page         int  `json:"page"`
-	RowPerPage   int  `json:"row_per_page"`
-	NextPage     bool `json:"next_page"`
-	PreviousPage bool `json:"previous_page"`
 }
 
 //NewGetAllPetResponse construct GetAllPetResponse
@@ -22,31 +18,17 @@ func NewGetAllPetResponse(pets []pet.Pet, page int, rowPerPage int) getAllPetRes
 	)
 
 	getAllPetResponse := getAllPetResponse{}
-	getAllPetResponse.Meta.Page = page
-	getAllPetResponse.Meta.RowPerPage = rowPerPage
-	getAllPetResponse.Meta.NextPage = false
+	getAllPetResponse.Meta.BuildMeta(lenPets, page, rowPerPage)
 
-	if lenPets > rowPerPage {
-		getAllPetResponse.Meta.NextPage = true
-	}
-
-	if (lenPets-1 <= rowPerPage) && (page != 1) {
-		getAllPetResponse.Meta.PreviousPage = true
-	}
-
-	for index, value := range pets {
-		if index == rowPerPage {
-			continue
-		}
-
+	for i := 0; i < getAllPetResponse.Meta.RowPerPage; i++ {
 		var getPetResponse GetPetResponse
 
-		getPetResponse.ID = value.ID
-		getPetResponse.UserID = value.UserID
-		getPetResponse.Name = value.Name
-		getPetResponse.Kind = value.Kind
-		getPetResponse.ModifiedAt = value.ModifiedAt
-		getPetResponse.Version = value.Version
+		getPetResponse.ID = pets[i].ID
+		getPetResponse.UserID = pets[i].UserID
+		getPetResponse.Name = pets[i].Name
+		getPetResponse.Kind = pets[i].Kind
+		getPetResponse.ModifiedAt = pets[i].ModifiedAt
+		getPetResponse.Version = pets[i].Version
 
 		getAllPetResponse.Pets = append(getAllPetResponse.Pets, getPetResponse)
 	}

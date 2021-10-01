@@ -2,6 +2,7 @@ package pet
 
 import (
 	"go-hexagonal/api/common"
+	"go-hexagonal/api/paginator"
 	"go-hexagonal/api/v1/pet/request"
 	"go-hexagonal/api/v1/pet/response"
 	"go-hexagonal/business/pet"
@@ -68,18 +69,9 @@ func (controller *Controller) FindAllPet(c echo.Context) error {
 	}
 
 	pageQueryParam := c.QueryParam("page")
-	page, err := strconv.Atoi(pageQueryParam)
-	if err != nil || page <= 0 {
-		page = 1
-	}
-
 	rowPerPageQueryParam := c.QueryParam("row_per_page")
-	rowPerPage, err := strconv.Atoi(rowPerPageQueryParam)
-	if err != nil || rowPerPage <= 0 {
-		rowPerPage = 10
-	}
 
-	skip := (page * rowPerPage) - rowPerPage
+	skip, page, rowPerPage := paginator.CreatePagination(pageQueryParam, rowPerPageQueryParam)
 
 	pets, err := controller.service.FindAllPet(int(userID), skip, rowPerPage)
 	if err != nil {

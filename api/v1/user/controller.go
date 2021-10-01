@@ -2,6 +2,7 @@ package user
 
 import (
 	"go-hexagonal/api/common"
+	"go-hexagonal/api/paginator"
 	"go-hexagonal/api/v1/user/request"
 	"go-hexagonal/api/v1/user/response"
 	"go-hexagonal/business/user"
@@ -40,18 +41,9 @@ func (controller *Controller) FindUserByID(c echo.Context) error {
 func (controller *Controller) FindAllUser(c echo.Context) error {
 
 	pageQueryParam := c.QueryParam("page")
-	page, err := strconv.Atoi(pageQueryParam)
-	if err != nil || page <= 0 {
-		page = 1
-	}
-
 	rowPerPageQueryParam := c.QueryParam("row_per_page")
-	rowPerPage, err := strconv.Atoi(rowPerPageQueryParam)
-	if err != nil || rowPerPage <= 0 {
-		rowPerPage = 10
-	}
 
-	skip := (page * rowPerPage) - rowPerPage
+	skip, page, rowPerPage := paginator.CreatePagination(pageQueryParam, rowPerPageQueryParam)
 
 	users, err := controller.service.FindAllUser(skip, rowPerPage)
 	if err != nil {
@@ -63,7 +55,7 @@ func (controller *Controller) FindAllUser(c echo.Context) error {
 	return c.JSON(common.NewSuccessResponse(response))
 }
 
-// InsertUser Create new user echo handler
+// InsertUser Create new user handler
 func (controller *Controller) InsertUser(c echo.Context) error {
 	insertUserRequest := new(request.InsertUserRequest)
 
@@ -79,7 +71,7 @@ func (controller *Controller) InsertUser(c echo.Context) error {
 	return c.JSON(common.NewSuccessResponseWithoutData())
 }
 
-// UpdateUser update existing user
+// UpdateUser update existing user handler
 func (controller *Controller) UpdateUser(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 
