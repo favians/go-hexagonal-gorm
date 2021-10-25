@@ -8,7 +8,7 @@ import (
 //GetPetWithUserResponse Get pet by ID response payload
 type GetPetWithUserResponse struct {
 	ID         int       `json:"id"`
-	UserID     int       `json:"pet_id"`
+	UserID     int       `json:"user_id"`
 	User       User      `json:"user"`
 	Name       string    `json:"name"`
 	Kind       string    `json:"kind"`
