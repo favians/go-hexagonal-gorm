@@ -7,12 +7,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-type ConfigIPForwarding struct {
-	Enabled bool   `mapstructure:"enabled"`
-	IP      string `mapstructure:"ip"`
-	Port    string `mapstructure:"port"`
-}
-
 //AppConfig Application configuration
 type AppConfig struct {
 	AppPort        int    `mapstructure:"app_port"`

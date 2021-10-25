@@ -26,23 +26,9 @@ func NewController(service pet.Service) *Controller {
 
 //GetItemByID Get item by ID echo handler
 func (controller *Controller) FindPetByID(c echo.Context) error {
-	user := c.Get("user").(*jwt.Token)
-	if !user.Valid {
-		return c.JSON(common.NewForbiddenResponse())
-	}
-
-	claims := user.Claims.(jwt.MapClaims)
-
-	//use float64 because its default data that provide by JWT, we cant use int/int32/int64/etc.
-	//MUST CONVERT TO FLOAT64, OTHERWISE ERROR (not _ok_)!
-	userID, ok := claims["id"].(float64)
-	if !ok {
-		return c.JSON(common.NewForbiddenResponse())
-	}
-
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	pet, err := controller.service.FindPetByID(id, int(userID))
+	pet, err := controller.service.FindPetByID(id)
 	if err != nil {
 		return c.JSON(common.NewErrorBusinessResponse(err))
 	}
@@ -115,19 +101,6 @@ func (controller *Controller) InsertPet(c echo.Context) error {
 
 // UpdatePet update existing pet
 func (controller *Controller) UpdatePet(c echo.Context) error {
-	user := c.Get("user").(*jwt.Token)
-	if !user.Valid {
-		return c.JSON(common.NewForbiddenResponse())
-	}
-
-	claims := user.Claims.(jwt.MapClaims)
-
-	//use float64 because its default data that provide by JWT, we cant use int/int32/int64/etc.
-	//MUST CONVERT TO FLOAT64, OTHERWISE ERROR (not _ok_)!
-	userID, ok := claims["id"].(float64)
-	if !ok {
-		return c.JSON(common.NewForbiddenResponse())
-	}
 
 	id, _ := strconv.Atoi(c.Param("id"))
 
@@ -136,10 +109,50 @@ func (controller *Controller) UpdatePet(c echo.Context) error {
 		return c.JSON(common.NewBadRequestResponse())
 	}
 
-	err := controller.service.UpdatePet(id, int(userID), updatePetRequest.Name, "modifier", updatePetRequest.Version)
+	err := controller.service.UpdatePet(id, updatePetRequest.Name, "modifier", updatePetRequest.Version)
 	if err != nil {
 		return c.JSON(common.NewErrorBusinessResponse(err))
 	}
 
 	return c.JSON(common.NewSuccessResponseWithoutData())
+}
+
+// FindPetByIDWithUserDataJoinInAPP Get pet data with user data inside, join in app service
+func (controller *Controller) FindPetByIDWithUserDataJoinInAPP(c echo.Context) error {
+
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	updatePetRequest := new(request.UpdatePetRequest)
+	if err := c.Bind(updatePetRequest); err != nil {
+		return c.JSON(common.NewBadRequestResponse())
+	}
+
+	pets, err := controller.service.FindPetByIDWithUserDataJoinInAPP(id)
+	if err != nil {
+		return c.JSON(common.NewErrorBusinessResponse(err))
+	}
+
+	response := response.NewGetPetWithUserResponse(*pets)
+
+	return c.JSON(common.NewSuccessResponse(response))
+}
+
+// FindPetByIDWithUserDataJoinInDB Get pet data with user data inside, join in DB
+func (controller *Controller) FindPetByIDWithUserDataJoinInDB(c echo.Context) error {
+
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	updatePetRequest := new(request.UpdatePetRequest)
+	if err := c.Bind(updatePetRequest); err != nil {
+		return c.JSON(common.NewBadRequestResponse())
+	}
+
+	pets, err := controller.service.FindPetByIDWithUserDataJoinInDB(id)
+	if err != nil {
+		return c.JSON(common.NewErrorBusinessResponse(err))
+	}
+
+	response := response.NewGetPetWithUserResponse(*pets)
+
+	return c.JSON(common.NewSuccessResponse(response))
 }

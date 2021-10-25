@@ -6,6 +6,7 @@ import "time"
 type Pet struct {
 	ID         int
 	UserID     int
+	User       User
 	Name       string
 	Kind       string
 	CreatedAt  time.Time
@@ -15,18 +16,29 @@ type Pet struct {
 	Version    int
 }
 
+type User struct {
+	Name     string
+	Username string
+}
+
 //NewPet create new Pet
 func NewPet(
 	id int,
 	userID int,
 	name string,
+	userName string,
+	userUsername string,
 	kind string,
 	creator string,
 	createdAt time.Time) Pet {
 
 	return Pet{
-		ID:         id,
-		UserID:     userID,
+		ID:     id,
+		UserID: userID,
+		User: User{
+			Name:     userName,
+			Username: userName,
+		},
 		Name:       name,
 		Kind:       kind,
 		CreatedAt:  createdAt,
@@ -42,6 +54,7 @@ func (oldData *Pet) ModifyPet(newName string, modifiedAt time.Time, updater stri
 	return Pet{
 		ID:         oldData.ID,
 		UserID:     oldData.UserID,
+		User:       oldData.User,
 		Name:       newName,
 		Kind:       oldData.Kind,
 		CreatedAt:  oldData.CreatedAt,

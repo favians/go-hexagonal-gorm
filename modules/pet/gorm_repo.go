@@ -67,11 +67,11 @@ func NewGormDBRepository(db *gorm.DB) *GormRepository {
 }
 
 //FindPetByID If data not found will return nil without error
-func (repo *GormRepository) FindPetByID(id int, userID int) (*pet.Pet, error) {
+func (repo *GormRepository) FindPetByID(id int) (*pet.Pet, error) {
 
 	var petData PetTable
 
-	err := repo.DB.Where("id = ?", id).Where("user_id = ?", userID).First(&petData).Error
+	err := repo.DB.Where("id = ?", id).First(&petData).Error
 	if err != nil {
 		return nil, err
 	}
@@ -124,4 +124,58 @@ func (repo *GormRepository) UpdatePet(pet pet.Pet, currentVersion int) error {
 	}
 
 	return nil
+}
+
+//FindPetByID If data not found will return nil without error
+func (repo *GormRepository) FindPetByIDWithUserDataJoinInDB(id int, userID int) (*pet.Pet, error) {
+
+	type result struct {
+		ID         int       `gorm:"id"`
+		UserID     int       `gorm:"user_id"`
+		Name       string    `gorm:"name"`
+		Kind       string    `gorm:"kind"`
+		CreatedAt  time.Time `gorm:"created_at"`
+		CreatedBy  string    `gorm:"created_by"`
+		ModifiedAt time.Time `gorm:"modified_at"`
+		ModifiedBy string    `gorm:"modified_by"`
+		Version    int       `gorm:"version"`
+
+		UserName     string `gorm:"user_name"`
+		UserUsername string `gorm:"user_username"`
+	}
+
+	var joinResult result
+
+	err := repo.DB.
+		Table("user_tables as user").Select(`
+			pet.id, 
+			pet.user_id, 
+			pet.name, 
+			pet.kind, 
+			pet.created_at,
+			pet.created_by,
+			pet.modified_at,
+			pet.modified_by,
+			pet.version,
+			user.name as user_name, 
+			user.username as user_username`).
+		Joins("left join pet_tables as pet on pet.user_id = user.id").Where("pet.id=?", id).
+		Scan(&joinResult).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	petData := pet.NewPet(
+		joinResult.ID,
+		joinResult.UserID,
+		joinResult.Name,
+		joinResult.UserName,
+		joinResult.UserUsername,
+		joinResult.Kind,
+		joinResult.CreatedBy,
+		joinResult.CreatedAt,
+	)
+
+	return &petData, nil
 }

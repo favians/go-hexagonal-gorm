@@ -33,6 +33,8 @@ func RegisterPath(e *echo.Echo, authController *auth.Controller, userController 
 	petV1.GET("", petController.FindAllPet)
 	petV1.POST("", petController.InsertPet)
 	petV1.PUT("/:id", petController.UpdatePet)
+	petV1.GET("/:id/user/app", petController.FindPetByIDWithUserDataJoinInAPP)
+	petV1.GET("/:id/user/db", petController.FindPetByIDWithUserDataJoinInDB)
 
 	//health check
 	e.GET("/health", func(c echo.Context) error {

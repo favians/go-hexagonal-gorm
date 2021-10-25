@@ -75,7 +75,7 @@ func main() {
 	petRepo := petRepository.NewGormDBRepository(dbConnection)
 
 	//initiate pet service
-	petService := petService.NewService(petRepo)
+	petService := petService.NewService(petRepo, userService)
 
 	//initiate pet controller
 	petController := petController.NewController(petService)
